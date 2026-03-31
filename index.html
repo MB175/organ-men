@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ASCII Organist – Generative Organ Music</title>
+  <title>ASCII Jazz Organist – Funky Generative Music</title>
   <style>
     /* ─── Retro CRT Terminal ─────────────────────────────── */
     *{box-sizing:border-box;margin:0;padding:0}
@@ -25,8 +25,8 @@
         to bottom,
         transparent 0px,
         transparent 3px,
-        rgba(0,0,0,.18) 3px,
-        rgba(0,0,0,.18) 4px
+        rgba(0,0,0,.15) 3px,
+        rgba(0,0,0,.15) 4px
       );
       z-index:100;
     }
@@ -35,7 +35,7 @@
     @keyframes flicker{
       0%,100%{opacity:1}
       92%{opacity:1}
-      93%{opacity:.95}
+      93%{opacity:.94}
       94%{opacity:1}
     }
     body{animation:flicker 8s infinite}
@@ -48,7 +48,7 @@
       flex-direction:column;
       align-items:center;
       justify-content:flex-end;
-      padding-bottom:8px;
+      padding-bottom:6px;
     }
 
     /* ─── Falling notes canvas ───────────────────────────── */
@@ -62,69 +62,135 @@
     #title{
       position:fixed;top:0;left:0;right:0;
       text-align:center;
-      font-size:clamp(10px,1.4vw,18px);
-      letter-spacing:0.25em;
-      padding:4px 0;
+      font-size:clamp(9px,1.3vw,17px);
+      letter-spacing:0.2em;
+      padding:3px 0;
       border-bottom:1px solid #00ff41;
       background:#000;
       z-index:20;
       text-shadow:0 0 8px #00ff41;
     }
 
-    /* ─── Info bar (chord / note display) ───────────────── */
+    /* ─── Info bar ───────────────────────────────────────── */
     #infoBar{
-      position:fixed;top:28px;left:0;right:0;
-      display:flex;justify-content:center;gap:3em;
-      font-size:clamp(9px,1.1vw,14px);
+      position:fixed;top:26px;left:0;right:0;
+      display:flex;justify-content:center;gap:2em;
+      font-size:clamp(8px,1vw,13px);
       color:#00bb30;
       z-index:20;
       padding:2px 0;
     }
     #infoBar span{color:#00ff41;text-shadow:0 0 6px #00ff41;}
+    #infoBar .jazz{color:#ffd700;text-shadow:0 0 6px #ffd700;}
+
+    /* ─── Settings panel ─────────────────────────────────── */
+    #settings{
+      position:fixed;
+      bottom:10px;right:10px;
+      background:rgba(0,12,0,0.94);
+      border:1px solid #00aa28;
+      padding:9px 13px;
+      z-index:50;
+      font-size:clamp(8px,.95vw,12px);
+      min-width:190px;
+      box-shadow:0 0 18px rgba(0,255,65,0.25);
+    }
+    #settings h3{
+      color:#ffd700;
+      text-shadow:0 0 6px #ffd700;
+      letter-spacing:.15em;
+      margin-bottom:7px;
+      font-size:clamp(8px,.95vw,12px);
+    }
+    #settings label{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin:5px 0;
+      gap:6px;
+      color:#00cc33;
+    }
+    #settings input[type=range]{
+      -webkit-appearance:none;
+      width:85px;
+      height:3px;
+      background:#003300;
+      outline:none;
+      border:1px solid #00aa28;
+      cursor:pointer;
+    }
+    #settings input[type=range]::-webkit-slider-thumb{
+      -webkit-appearance:none;
+      width:11px;height:11px;
+      background:#00ff41;
+      cursor:pointer;
+      box-shadow:0 0 5px #00ff41;
+    }
+    #settings select{
+      background:#001100;
+      color:#ffd700;
+      border:1px solid #00aa28;
+      font-family:inherit;
+      font-size:inherit;
+      padding:1px 3px;
+      cursor:pointer;
+    }
+    #settings .val{color:#ffd700;min-width:34px;text-align:right;}
 
     /* ─── ASCII scene ────────────────────────────────────── */
     #scene{
       position:relative;
       z-index:15;
-      font-size:clamp(7px,.95vw,13px);
-      line-height:1.25;
+      font-size:clamp(6px,.88vw,12px);
+      line-height:1.22;
       text-align:left;
       white-space:pre;
-      text-shadow:0 0 6px #00ff41;
+      text-shadow:0 0 5px #00ff41;
     }
 
-    /* highlighted key glow */
-    .key-lit{color:#fff;text-shadow:0 0 12px #ffffff, 0 0 4px #00ff41;}
+    /* Chord key glow (amber) */
+    .key-lit{color:#ffd700;text-shadow:0 0 10px #ffd700, 0 0 4px #ff8800;}
+    /* Melody key glow (white) */
+    .key-lit-mel{color:#fff;text-shadow:0 0 14px #ffffff, 0 0 5px #00ff41;}
+    /* Organ pipe glows */
+    .pipe-chord{color:#ffa500;text-shadow:0 0 8px #ffa500;}
+    .pipe-mel{color:#fff;text-shadow:0 0 12px #fff, 0 0 4px #ffd700;}
 
     /* ─── Start overlay ──────────────────────────────────── */
     #overlay{
       position:fixed;inset:0;
-      background:rgba(0,0,0,.88);
+      background:rgba(0,0,0,.90);
       display:flex;flex-direction:column;
       align-items:center;justify-content:center;
       z-index:200;
       cursor:pointer;
-      gap:1em;
+      gap:0.7em;
     }
     #overlay h1{
-      font-size:clamp(18px,3vw,42px);
+      font-size:clamp(16px,2.8vw,46px);
       letter-spacing:.3em;
-      text-shadow:0 0 20px #00ff41;
+      text-shadow:0 0 20px #00ff41, 0 0 40px #00ff41;
+    }
+    #overlay .sub{
+      font-size:clamp(9px,1.4vw,18px);
+      color:#ffd700;
+      text-shadow:0 0 10px #ffd700;
+      letter-spacing:.2em;
     }
     #overlay p{
-      font-size:clamp(11px,1.5vw,18px);
+      font-size:clamp(10px,1.2vw,15px);
       color:#00bb30;
-      letter-spacing:.15em;
+      letter-spacing:.12em;
     }
     @keyframes blink{50%{opacity:0}}
-    #overlay .blink{animation:blink 1.1s step-end infinite;color:#00ff41;}
+    #overlay .blink{animation:blink 1.0s step-end infinite;color:#00ff41;}
 
-    /* ─── Glow pulse on player head when playing ─────────── */
+    /* ─── Head bob ───────────────────────────────────────── */
     @keyframes headBob{
       0%,100%{transform:translateY(0)}
-      50%{transform:translateY(-2px)}
+      50%{transform:translateY(-3px)}
     }
-    .bob{animation:headBob .22s ease-in-out;}
+    .bob{animation:headBob .18s ease-in-out;}
 
   </style>
 </head>
@@ -132,20 +198,45 @@
 
 <!-- Start overlay -->
 <div id="overlay" onclick="startMusic()">
-  <h1>◈ ASCII ORGANIST ◈</h1>
-  <p>Generative Organ Music &nbsp;·&nbsp; James Last Style</p>
+  <h1>◈ ASCII JAZZ ORGANIST ◈</h1>
+  <div class="sub">♩ ♪ ♫  F U N K Y &nbsp; G E N E R A T I V E &nbsp; J A Z Z  ♫ ♪ ♩</div>
+  <p>Bebop · Swing · Blues · All Night Long</p>
   <p class="blink">[ CLICK TO START ]</p>
 </div>
 
-<div id="title">◈ &nbsp; A S C I I &nbsp; O R G A N I S T &nbsp; ◈ &nbsp; G E N E R A T I V E &nbsp; M U S I C &nbsp; ◈</div>
+<div id="title">♩ &nbsp; A S C I I &nbsp; J A Z Z &nbsp; O R G A N I S T &nbsp; ♪ &nbsp; F U N K Y &nbsp; G E N E R A T I V E &nbsp; M U S I C &nbsp; ♫</div>
 
 <div id="infoBar">
   <div>CHORD: <span id="chordDisplay">—</span></div>
   <div>NOTE: <span id="noteDisplay">—</span></div>
-  <div>BPM: <span id="bpmDisplay">—</span></div>
+  <div>BPM: <span id="bpmDisplay" class="jazz">—</span></div>
+  <div>STYLE: <span id="styleDisplay" class="jazz">—</span></div>
+  <div>FEEL: <span id="feelDisplay">—</span></div>
 </div>
 
 <canvas id="noteCanvas"></canvas>
+
+<!-- Settings panel -->
+<div id="settings">
+  <h3>⚙ SETTINGS</h3>
+  <label>BPM
+    <input type="range" id="bpmSlider" min="60" max="220" value="144" oninput="updateBPM(this.value)">
+    <span class="val" id="bpmVal">144</span>
+  </label>
+  <label>SWING
+    <input type="range" id="swingSlider" min="0" max="85" value="55" oninput="updateSwing(this.value)">
+    <span class="val" id="swingVal">55%</span>
+  </label>
+  <label>STYLE
+    <select id="styleSelect" onchange="updateStyle(this.value)">
+      <option value="jazz">JAZZ</option>
+      <option value="blues">BLUES</option>
+      <option value="bebop">BEBOP</option>
+      <option value="funk">FUNK</option>
+      <option value="easy">EASY</option>
+    </select>
+  </label>
+</div>
 
 <div id="app">
   <pre id="scene"></pre>
@@ -157,74 +248,106 @@
 // ═══════════════════════════════════════════════════════════════
 
 const HEAD_NORMAL = `
-     ___
-    /o o\\
-    | ^ |
-     \\_/`;
+    _____
+   |~~~~~|
+  / o   o \\
+  |   ^   |
+  |  ___  |
+   \\_____/`;
 
 const HEAD_PLAY = `
-     ___
-    /O O\\
-    | ♪ |
-     \\_/`;
+    _____
+   |~~~~~|
+  / O   O \\
+  |   ♪   |
+  |  \\o/  |
+   \\_____/`;
 
-// Full scene template – {{HEAD}} replaced dynamically
-// The keyboard row IDs are used for key-lit animations
-function buildScene(headLines, litKeys) {
+const HEAD_GROOVE = `
+    _____
+   |~~~~~|
+  / ◉   ◉ \\
+  |  \\__/  |
+  |        |
+   \\_____/`;
+
+// Pipe heights for 14 pipes (one per keyboard key, 1–6 rows tall)
+const PIPE_HEIGHTS = [3,5,4,6,5,3,6,4,3,6,5,4,5,3];
+
+function buildScene(headLines, litKeys, litMelKeys) {
+  litMelKeys = litMelKeys || new Set();
   const h = headLines.join('\n');
 
-  // Keyboard: 14 white keys, black keys above
-  const WHITE = '▓';
-  const BLACK = '░';
-  const keys = [];
-  // pattern of black keys (1=has black key above, 0=no)
+  // ── Organ pipes (14 pipes, heights 3-6) ──────────────────
+  const maxH = 6;
+  let pipeSection = '';
+  for(let r = maxH; r >= 1; r--) {
+    let line = '  ';
+    for(let i = 0; i < 14; i++) {
+      let ch;
+      if(PIPE_HEIGHTS[i] === r)      ch = '╤';
+      else if(PIPE_HEIGHTS[i] > r)   ch = '║';
+      else                            ch = ' ';
+      if(ch !== ' ') {
+        if(litMelKeys.has(i))        ch = `<span class="pipe-mel">${ch}</span>`;
+        else if(litKeys.has(i))      ch = `<span class="pipe-chord">${ch}</span>`;
+      }
+      line += ch;
+      if(i < 13) line += ' ';
+    }
+    pipeSection += line + '\n';
+  }
+  // Pipe bases
+  let pipeBase = '  ';
+  for(let i = 0; i < 14; i++) { pipeBase += '╧'; if(i < 13) pipeBase += ' '; }
+  pipeSection += pipeBase;
+
+  // ── Keyboard (14 white keys + black keys above) ───────────
   const blackPattern = [1,1,0,1,1,1,0, 1,1,0,1,1,1,0];
-  for(let i=0;i<14;i++){
-    keys.push({white: WHITE, black: blackPattern[i]===1 ? BLACK : ' ', lit: litKeys.has(i)});
+  const keys = [];
+  for(let i = 0; i < 14; i++) {
+    keys.push({ hasBlack: blackPattern[i] === 1, litChord: litKeys.has(i), litMel: litMelKeys.has(i) });
   }
 
-  const topRow  = keys.map(k => k.black).join('│');
-  const midRow  = keys.map(k => k.black!=' ' ? k.black : ' ').join('│');
-  const botRow  = keys.map(k => k.lit ? '█' : k.white).join('│');
-
-  // Build rows with spans for lighting – we do this as HTML inside a <pre>
-  const blackKeyRow = keys.map((k,i)=>{
-    const ch = k.black;
-    return ch === ' ' ? ' ' : (litKeys.has(i) ? `<span class="key-lit">${ch}</span>` : ch);
+  const blackKeyRow = keys.map((k,i) => {
+    if(!k.hasBlack) return ' ';
+    if(k.litMel)   return `<span class="key-lit-mel">▒</span>`;
+    if(k.litChord) return `<span class="key-lit">░</span>`;
+    return '░';
   }).join('│');
 
-  const whiteKeyRow = keys.map((k,i)=>{
-    const ch = k.lit ? '█' : k.white;
-    return litKeys.has(i) ? `<span class="key-lit">${ch}</span>` : ch;
+  const whiteKeyRow = keys.map((k,i) => {
+    if(k.litMel)   return `<span class="key-lit-mel">█</span>`;
+    if(k.litChord) return `<span class="key-lit">▌</span>`;
+    return '▓';
   }).join('│');
 
   return `
+${pipeSection}
 
 ${h}
-        |     |
-       /|     |\\
-      / |     | \\
-     /  |     |  \\
-    |   |_____|   |
-    |  /       \\  |
-    | / [~~~~~] \\ |
-    |/   organ   \\|
-    |             |
-  ╔═╧═════════════╧═╗
-  ║  ║ ORGAN  ║  ║  ║
-  ║  ╠═══════╣  ║  ║
-  ╠══╬═══════╬══╬══╣
-  ║░░║░░░░░░░║░░║░░║
-  ╠══╩═══════╩══╩══╣
-  ║                 ║
+        |      |
+       /|      |\\
+      / |  ♩♪  | \\
+     /  |      |  \\
+    |   |______|   |
+    |  /          \\  |
+    | / ♫ J A Z Z ♬ \\ |
+    |/   O R G A N   \\|
+    |                 |
+  ╔═╧═════════════════╧═╗
+  ║  ╔═══ J A Z Z ═══╗  ║
+  ║  ║ ░░░░░░░░░░░░░ ║  ║
+  ╠══╬═══════════════╬══╣
+  ║░░║░░░░░░░░░░░░░░░║░░║
+  ╠══╩═══════════════╩══╣
+  ║                      ║
   ║  ┌─────────────────────────────┐  ║
-  ║  │${blackKeyRow}│  ║
   ║  │${blackKeyRow}│  ║
   ║  ├─────────────────────────────┤  ║
   ║  │${whiteKeyRow}│  ║
-  ║  │${whiteKeyRow}│  ║
   ║  └─────────────────────────────┘  ║
-  ╚═════════════════════════════════╝
+  ╚═══════════════════════════════════╝
      │░░░░░░░░░░░░░░░░░░░░░░░░░░░│
      │   P E D A L   B O A R D   │
      └───────────────────────────┘
@@ -235,52 +358,60 @@ ${h}
 //  MUSIC ENGINE  (Web Audio API)
 // ═══════════════════════════════════════════════════════════════
 
-let audioCtx = null;
+let audioCtx   = null;
 let reverbNode = null;
 let masterGain = null;
 
 // Note → frequency table
 const NOTE_FREQ = {
-  C2:65.41,D2:73.42,E2:82.41,F2:87.31,G2:98.00,A2:110.00,B2:123.47,
+  C2:65.41, D2:73.42, E2:82.41, F2:87.31, G2:98.00, A2:110.00, B2:123.47,
   C3:130.81,D3:146.83,E3:164.81,F3:174.61,G3:196.00,A3:220.00,B3:246.94,
   C4:261.63,D4:293.66,E4:329.63,F4:349.23,G4:392.00,A4:440.00,B4:493.88,
   C5:523.25,D5:587.33,E5:659.25,F5:698.46,G5:783.99,A5:880.00,
 };
 
-// Which white-key index (0-13) each note maps to (for keyboard lighting)
+// Which white-key index (0–13) each note maps to
 const NOTE_KEY_IDX = {
-  C3:0,D3:1,E3:2,F3:3,G3:4,A3:5,B3:6,
-  C4:7,D4:8,E4:9,F4:10,G4:11,A4:12,B4:13,
-  C5:7,D5:8,E5:9,F5:10,G5:11,
+  C3:0, D3:1, E3:2, F3:3, G3:4, A3:5, B3:6,
+  C4:7, D4:8, E4:9, F4:10,G4:11,A4:12,B4:13,
+  C5:7, D5:8, E5:9, F5:10,G5:11,
 };
 
 function createReverb(ctx) {
-  const len = ctx.sampleRate * 2.5;
+  const len = ctx.sampleRate * 2.2;
   const buf = ctx.createBuffer(2, len, ctx.sampleRate);
-  for(let c=0;c<2;c++){
+  for(let c = 0; c < 2; c++) {
     const d = buf.getChannelData(c);
-    for(let i=0;i<len;i++) d[i] = (Math.random()*2-1) * Math.pow(1 - i/len, 2.2);
+    for(let i = 0; i < len; i++) d[i] = (Math.random()*2-1) * Math.pow(1 - i/len, 2.0);
   }
   const conv = ctx.createConvolver();
   conv.buffer = buf;
   return conv;
 }
 
+// Style-specific drawbar (harmonic) settings
+const STYLE_DRAWBARS = {
+  jazz:  { harmonics:[1,2,3,4,6,8],  drawbars:[6,8,4,3,2,1] },
+  blues: { harmonics:[1,2,3,4,6],    drawbars:[8,5,6,3,2]   },
+  bebop: { harmonics:[1,2,3,4,6,8],  drawbars:[5,8,5,4,2,1] },
+  funk:  { harmonics:[1,2,3,4,6],    drawbars:[8,7,5,3,1]   },
+  easy:  { harmonics:[1,2,3,4,6,8],  drawbars:[8,6,4,3,2,1] },
+};
+
 function playOrganNote(note, duration, velocity=0.28) {
   if(!audioCtx) return;
   const freq = NOTE_FREQ[note];
   if(!freq) return;
 
-  // Organ = sum of drawbar harmonics (sine waves)
-  const harmonics = [1, 2, 3, 4, 6, 8];
-  const drawbars  = [8, 6, 4, 3, 2, 1]; // volumes per harmonic
+  const db = STYLE_DRAWBARS[currentStyle] || STYLE_DRAWBARS.jazz;
+  const { harmonics, drawbars } = db;
 
   const noteGain = audioCtx.createGain();
   noteGain.connect(reverbNode);
   noteGain.connect(masterGain);
 
-  const now = audioCtx.currentTime;
-  const totalVol = drawbars.reduce((a,b)=>a+b,0);
+  const now      = audioCtx.currentTime;
+  const totalVol = drawbars.reduce((a,b) => a+b, 0);
 
   harmonics.forEach((h, i) => {
     const osc = audioCtx.createOscillator();
@@ -291,57 +422,118 @@ function playOrganNote(note, duration, velocity=0.28) {
     osc.connect(g);
     g.connect(noteGain);
     osc.start(now);
-    osc.stop(now + duration + 0.08);
+    osc.stop(now + duration + 0.07);
   });
 
-  // Organ-style: fast attack, sustain, quick release
+  // Fast organ attack, sustain, quick release
   noteGain.gain.setValueAtTime(0, now);
-  noteGain.gain.linearRampToValueAtTime(1, now + 0.015);
-  noteGain.gain.setValueAtTime(1, now + duration - 0.05);
-  noteGain.gain.linearRampToValueAtTime(0, now + duration + 0.08);
+  noteGain.gain.linearRampToValueAtTime(1, now + 0.012);
+  noteGain.gain.setValueAtTime(1, now + duration - 0.04);
+  noteGain.gain.linearRampToValueAtTime(0, now + duration + 0.07);
 }
 
-// ─── James Last–style chord progressions ─────────────────────
-// Key of C major, smooth easy-listening organ feel
-
+// ─── Jazz chord definitions ────────────────────────────────────
 const CHORD_DEFS = {
-  // {bass: [notes], mel: [chord tones], label: string}
-  'C':  { bass:['C3','G3'],       mel:['C4','E4','G4','C5'],       label:'C maj' },
-  'Am': { bass:['A2','E3'],       mel:['A3','C4','E4','A4'],       label:'A min' },
-  'F':  { bass:['F2','C3'],       mel:['F3','A3','C4','F4'],       label:'F maj' },
-  'G':  { bass:['G2','D3'],       mel:['G3','B3','D4','G4'],       label:'G maj' },
-  'Dm': { bass:['D3','A3'],       mel:['D4','F4','A4'],            label:'D min' },
-  'Em': { bass:['E3','B3'],       mel:['E4','G4','B4'],            label:'E min' },
-  'G7': { bass:['G2','D3'],       mel:['G3','B3','F4','G4'],       label:'G7'   },
+  // Triads
+  'C':    { bass:['C3','G3'],  mel:['C4','E4','G4','C5'],       label:'C'     },
+  'Am':   { bass:['A2','E3'],  mel:['A3','C4','E4','A4'],       label:'Am'    },
+  'F':    { bass:['F2','C3'],  mel:['F3','A3','C4','F4'],       label:'F'     },
+  'G':    { bass:['G2','D3'],  mel:['G3','B3','D4','G4'],       label:'G'     },
+  'Dm':   { bass:['D3','A3'],  mel:['D4','F4','A4'],            label:'Dm'    },
+  'Em':   { bass:['E3','B3'],  mel:['E4','G4','B4'],            label:'Em'    },
+  // Dominant & extended chords
+  'G7':   { bass:['G2','D3'],  mel:['G3','B3','F4','G4'],       label:'G7'    },
+  'D7':   { bass:['D3','A3'],  mel:['D4','F4','A4','C5'],       label:'D7'    },
+  'A7':   { bass:['A2','E3'],  mel:['A3','C4','E4','G4'],       label:'A7'    },
+  'C7':   { bass:['C3','G3'],  mel:['C4','E4','G4','B4'],       label:'C7'    },
+  'F7':   { bass:['F2','C3'],  mel:['F3','A3','C4','E4'],       label:'F7'    },
+  // Major 7ths
+  'Cmaj7':{ bass:['C3','G3'],  mel:['C4','E4','G4','B4'],       label:'Cmaj7' },
+  'Fmaj7':{ bass:['F2','C3'],  mel:['F3','A3','C4','E4'],       label:'Fmaj7' },
+  // Minor 7ths
+  'Am7':  { bass:['A2','E3'],  mel:['A3','C4','E4','G4'],       label:'Am7'   },
+  'Dm7':  { bass:['D3','A3'],  mel:['D4','F4','A4','C5'],       label:'Dm7'   },
+  'Em7':  { bass:['E3','B3'],  mel:['E4','G4','B4','D5'],       label:'Em7'   },
+  // Diminished
+  'Bdim': { bass:['B2','F3'],  mel:['B3','D4','F4'],            label:'Bdim'  },
 };
 
-// Multiple progressions for variety
-const PROGRESSIONS = [
-  ['C','Am','F','G'],
-  ['C','F','G','C'],
-  ['C','Am','Dm','G7'],
-  ['C','Em','F','G'],
-  ['F','G','Am','C'],
-];
-
-let currentProgIdx = 0;
-let currentChordStep = 0;
-let currentProg = PROGRESSIONS[0];
-
-// ─── Generative melody over chords ───────────────────────────
-
-// Scale degrees for melody over each chord
+// ─── Melody lines per chord (jazzy passing-tone patterns) ──────
 const MELODY_OVER = {
-  'C':  ['C4','E4','G4','C5','E5','G5','C5','G4'],
-  'Am': ['A4','C5','E5','A5','C5','E5','A4','C5'],
-  'F':  ['F4','A4','C5','F5','A4','C5','F4','A4'],
-  'G':  ['G4','B4','D5','G5','B4','D5','G4','B4'],
-  'Dm': ['D4','F4','A4','D5','F4','A4','D4','F4'],
-  'Em': ['E4','G4','B4','E5','G4','B4','E4','G4'],
-  'G7': ['G4','B4','F5','D5','B4','G4','F4','D4'],
+  'C':    ['C4','E4','G4','C5','B4','G4','E4','C4'],
+  'Am':   ['A4','C5','E5','A4','G4','E4','C4','A3'],
+  'F':    ['F4','A4','C5','F5','E5','C5','A4','F4'],
+  'G':    ['G4','B4','D5','G5','F5','D5','B4','G4'],
+  'Dm':   ['D4','F4','A4','D5','C5','A4','F4','D4'],
+  'Em':   ['E4','G4','B4','E5','D5','B4','G4','E4'],
+  'G7':   ['G4','B4','D5','F5','E5','D5','B4','G4'],
+  'D7':   ['D4','F4','A4','C5','D5','C5','A4','F4'],
+  'A7':   ['A3','C4','E4','G4','A4','G4','E4','C4'],
+  'C7':   ['C4','E4','G4','B4','C5','B4','G4','E4'],
+  'F7':   ['F4','A4','C5','E5','F5','E5','C5','A4'],
+  'Cmaj7':['C4','E4','G4','B4','C5','E5','B4','G4'],
+  'Fmaj7':['F4','A4','C5','E5','F5','E5','C5','A4'],
+  'Am7':  ['A3','C4','E4','G4','A4','G4','E4','C4'],
+  'Dm7':  ['D4','F4','A4','C5','D5','C5','A4','F4'],
+  'Em7':  ['E4','G4','B4','D5','E5','D5','B4','G4'],
+  'Bdim': ['B3','D4','F4','B4','A4','G4','F4','D4'],
 };
 
-let melodyIdx = 0;
+// ─── Per-style progressions ────────────────────────────────────
+const STYLE_PROGRESSIONS = {
+  jazz:  [
+    ['Cmaj7','Am7','Dm7','G7'],
+    ['Fmaj7','Em7','Am7','G7'],
+    ['Cmaj7','Em7','Fmaj7','G7'],
+    ['Dm7','G7','Cmaj7','Am7'],
+  ],
+  blues: [
+    ['C7','F7','C7','G7'],
+    ['C7','C7','F7','F7','C7','C7','G7','F7'],
+  ],
+  bebop: [
+    ['Cmaj7','Bdim','Am7','D7','Dm7','G7','Cmaj7','G7'],
+    ['Dm7','G7','Cmaj7','Em7'],
+    ['Am7','D7','Dm7','G7'],
+  ],
+  funk:  [
+    ['C7','C7','F7','C7'],
+    ['Am7','Am7','Dm7','G7'],
+  ],
+  easy:  [
+    ['C','Am','F','G'],
+    ['C','F','G','C'],
+    ['C','Am','Dm','G7'],
+    ['C','Em','F','G'],
+    ['F','G','Am','C'],
+  ],
+};
+
+const STYLE_LABELS = { jazz:'JAZZ', blues:'BLUES', bebop:'BEBOP', funk:'FUNK', easy:'EASY' };
+
+// ─── Runtime music state ───────────────────────────────────────
+let currentBPM   = 144;
+let currentSwing = 55;
+let currentStyle = 'jazz';
+
+let currentProgIdx   = 0;
+let currentChordStep = 0;
+let currentProg      = STYLE_PROGRESSIONS.jazz[0];
+let melodyIdx        = 0;
+
+function getBeatSec() { return 60 / currentBPM; }
+
+// Maximum swing deviation: 18% means at full swing the long beat is 1.18× and
+// the short beat is 0.82× a straight beat, approximating a jazz triplet feel.
+const MAX_SWING_DEVIATION = 0.18;
+
+// Swing: alternate beat durations so even beats are longer
+function getSwingDuration() {
+  const dev = (currentSwing / 100) * MAX_SWING_DEVIATION;
+  return getBeatSec() * (melodyBeatInBar % 2 === 0 ? 1 + dev : 1 - dev);
+}
+
+const BEATS_PER_CHORD = 4;
 
 // ═══════════════════════════════════════════════════════════════
 //  FALLING NOTES ANIMATION
@@ -360,44 +552,48 @@ function resizeCanvas() {
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
-function spawnNote(keyIdx) {
+function spawnNote(keyIdx, isMelody) {
   const x = 80 + keyIdx * (canvas.width / 16);
+  // Scale fall speed with BPM
+  const speedScale = currentBPM / 100;
   fallingNotes.push({
-    x: x + (Math.random()-0.5)*30,
+    x: x + (Math.random()-0.5)*32,
     y: 0,
-    vy: 1.5 + Math.random() * 2,
+    vy: speedScale * (1.6 + Math.random() * 2),
     sym: NOTE_SYMBOLS[Math.floor(Math.random()*NOTE_SYMBOLS.length)],
     alpha: 1,
-    size: 14 + Math.random()*10,
-    color: `hsl(${120+Math.random()*30}, 100%, ${60+Math.random()*20}%)`,
+    size: 13 + Math.random()*10,
+    color: isMelody
+      ? `hsl(${50+Math.random()*20}, 100%, ${75+Math.random()*15}%)`   // gold tones for melody
+      : `hsl(${110+Math.random()*30}, 100%, ${55+Math.random()*20}%)`, // green tones for chords
     hit: false,
   });
 }
 
 function animateNotes() {
-  ctx2d.clearRect(0,0,canvas.width,canvas.height);
+  ctx2d.clearRect(0, 0, canvas.width, canvas.height);
   const bottom = canvas.height * 0.80;
 
-  for(let i = fallingNotes.length-1; i>=0; i--) {
+  for(let i = fallingNotes.length-1; i >= 0; i--) {
     const n = fallingNotes[i];
     n.y += n.vy;
 
     if(n.y >= bottom && !n.hit) {
       n.hit = true;
-      n.vy  = -n.vy * 0.4; // little bounce
+      n.vy  = -n.vy * 0.35;
     }
     if(n.hit) {
-      n.alpha -= 0.025;
-      n.vy    *= 0.92;
+      n.alpha -= 0.028;
+      n.vy    *= 0.90;
     }
-    if(n.alpha <= 0) { fallingNotes.splice(i,1); continue; }
+    if(n.alpha <= 0) { fallingNotes.splice(i, 1); continue; }
 
     ctx2d.save();
     ctx2d.globalAlpha = n.alpha;
     ctx2d.font = `${n.size}px "Courier New"`;
-    ctx2d.fillStyle = n.color;
+    ctx2d.fillStyle  = n.color;
     ctx2d.shadowColor = n.color;
-    ctx2d.shadowBlur  = 10;
+    ctx2d.shadowBlur  = 12;
     ctx2d.fillText(n.sym, n.x, n.y);
     ctx2d.restore();
   }
@@ -405,70 +601,77 @@ function animateNotes() {
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  PLAYER  ANIMATION  (head bob + key light)
+//  PLAYER ANIMATION
 // ═══════════════════════════════════════════════════════════════
 
-let litKeys = new Set();
-let isPlaying = false;
+let litKeys     = new Set();
+let litMelKeys  = new Set();
+let isPlaying   = false;
 let headBobTimeout = null;
+let beatCount   = 0; // for groove head on downbeats
 
-function renderScene(bobHead=false) {
-  const headLines = bobHead ? HEAD_PLAY.trim().split('\n') : HEAD_NORMAL.trim().split('\n');
-  document.getElementById('scene').innerHTML = buildScene(headLines, litKeys);
+function renderScene(headState='normal') {
+  const src = headState === 'groove' ? HEAD_GROOVE
+            : headState === 'play'   ? HEAD_PLAY
+            : HEAD_NORMAL;
+  const headLines = src.trim().split('\n');
+  document.getElementById('scene').innerHTML = buildScene(headLines, litKeys, litMelKeys);
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  MUSIC  SCHEDULER
+//  MUSIC SCHEDULER
 // ═══════════════════════════════════════════════════════════════
 
-const BPM       = 108;
-const BEAT_SEC  = 60 / BPM;
-const BEATS_PER_CHORD = 4; // one chord per 4 beats (= 1 measure)
-
 let schedulerTimer  = null;
-let currentBeat     = 0;
 let nextBeatTime    = 0;
 let melodyBeatInBar = 0;
 
-// Beat subdivisions: melody plays on every beat, bass on beat 1&3
 function scheduleNextBeat() {
   if(!audioCtx) return;
 
-  const chord = currentProg[currentChordStep];
-  const cDef  = CHORD_DEFS[chord];
+  const beatSec = getBeatSec();
+  const chord   = currentProg[currentChordStep];
+  const cDef    = CHORD_DEFS[chord];
 
-  // Bass notes on beat 1 and beat 3 of the bar
+  // Bass on beat 1 & 3
   if(melodyBeatInBar === 0 || melodyBeatInBar === 2) {
     const bassNote = cDef.bass[melodyBeatInBar === 0 ? 0 : 1];
-    playOrganNote(bassNote, BEAT_SEC * 1.8, 0.18);
+    playOrganNote(bassNote, beatSec * 1.7, 0.20);
     document.getElementById('chordDisplay').textContent = cDef.label;
   }
 
-  // Inner voice (chord tone), every beat
+  // Inner voice (chord tone) every beat
   const chordTone = cDef.mel[melodyBeatInBar % cDef.mel.length];
-  playOrganNote(chordTone, BEAT_SEC * 0.85, 0.16);
+  playOrganNote(chordTone, beatSec * 0.82, 0.17);
 
-  // Melody note (upper voice), every beat, moves through melody array
+  // Melody note (upper voice) every beat
   const melNote = MELODY_OVER[chord][melodyIdx % MELODY_OVER[chord].length];
-  playOrganNote(melNote, BEAT_SEC * 0.75, 0.22);
+  playOrganNote(melNote, beatSec * 0.72, 0.25);
   document.getElementById('noteDisplay').textContent = melNote;
 
-  // Visual: spawn falling note
-  const keyIdx = NOTE_KEY_IDX[melNote] ?? Math.floor(Math.random()*14);
-  spawnNote(keyIdx);
+  // Visuals
+  const melKeyIdx   = NOTE_KEY_IDX[melNote]   ?? Math.floor(Math.random()*14);
+  const chordKeyIdx = NOTE_KEY_IDX[chordTone] ?? -1;
 
-  // Light the key
+  spawnNote(melKeyIdx, true);
+  if(chordKeyIdx >= 0) spawnNote(chordKeyIdx, false);
+
   litKeys.clear();
-  litKeys.add(keyIdx);
-  if(NOTE_KEY_IDX[chordTone] !== undefined) litKeys.add(NOTE_KEY_IDX[chordTone]);
-  renderScene(true);
+  litMelKeys.clear();
+  if(chordKeyIdx >= 0) litKeys.add(chordKeyIdx);
+  litMelKeys.add(melKeyIdx);
 
-  // Unlight after short delay
+  beatCount++;
+  // Groove head on measure downbeat (beat 0), play head otherwise
+  const headState = melodyBeatInBar === 0 ? 'groove' : 'play';
+  renderScene(headState);
+
   clearTimeout(headBobTimeout);
-  headBobTimeout = setTimeout(()=>{
+  headBobTimeout = setTimeout(() => {
     litKeys.clear();
-    renderScene(false);
-  }, BEAT_SEC * 1000 * 0.7); // 70% of a beat in milliseconds
+    litMelKeys.clear();
+    renderScene('normal');
+  }, beatSec * 1000 * 0.65);
 
   // Advance counters
   melodyIdx++;
@@ -476,19 +679,50 @@ function scheduleNextBeat() {
 
   if(melodyBeatInBar === 0) {
     currentChordStep = (currentChordStep + 1) % currentProg.length;
-    if(currentChordStep === 0) {
-      // Occasionally switch progression for variety
-      if(Math.random() < 0.25) {
-        currentProgIdx = (currentProgIdx + 1) % PROGRESSIONS.length;
-        currentProg    = PROGRESSIONS[currentProgIdx];
-      }
+    if(currentChordStep === 0 && Math.random() < 0.3) {
+      const progs = STYLE_PROGRESSIONS[currentStyle];
+      currentProgIdx = (currentProgIdx + 1) % progs.length;
+      currentProg    = progs[currentProgIdx];
     }
   }
 
-  // Schedule next beat precisely
-  nextBeatTime += BEAT_SEC;
+  // Swing-aware next beat scheduling
+  const thisBeatDur = getSwingDuration();
+  nextBeatTime += thisBeatDur;
   const delay = Math.max(0, (nextBeatTime - audioCtx.currentTime) * 1000 - 20);
   schedulerTimer = setTimeout(scheduleNextBeat, delay);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  SETTINGS  HANDLERS
+// ═══════════════════════════════════════════════════════════════
+
+function updateBPM(val) {
+  currentBPM = parseInt(val, 10);
+  document.getElementById('bpmVal').textContent  = val;
+  document.getElementById('bpmDisplay').textContent = val;
+}
+
+function updateSwing(val) {
+  currentSwing = parseInt(val, 10);
+  document.getElementById('swingVal').textContent = val + '%';
+  const SWING_THRESHOLD_STRAIGHT = 15;
+  const SWING_THRESHOLD_LITE     = 40;
+  const SWING_THRESHOLD_NORMAL   = 65;
+  const feel = val < SWING_THRESHOLD_STRAIGHT ? 'STRAIGHT'
+             : val < SWING_THRESHOLD_LITE     ? 'LITE SWING'
+             : val < SWING_THRESHOLD_NORMAL   ? 'SWING'
+             : 'HEAVY SWING';
+  document.getElementById('feelDisplay').textContent = feel;
+}
+
+function updateStyle(val) {
+  currentStyle     = val;
+  currentProgIdx   = 0;
+  currentChordStep = 0;
+  melodyBeatInBar  = 0;
+  currentProg      = STYLE_PROGRESSIONS[val][0];
+  document.getElementById('styleDisplay').textContent = STYLE_LABELS[val];
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -500,7 +734,9 @@ function startMusic() {
   isPlaying = true;
 
   document.getElementById('overlay').style.display = 'none';
-  document.getElementById('bpmDisplay').textContent = BPM;
+  document.getElementById('bpmDisplay').textContent   = currentBPM;
+  document.getElementById('styleDisplay').textContent = STYLE_LABELS[currentStyle];
+  updateSwing(currentSwing);
 
   audioCtx   = new (window.AudioContext || window.webkitAudioContext)();
   masterGain = audioCtx.createGain();
@@ -512,13 +748,13 @@ function startMusic() {
 
   nextBeatTime = audioCtx.currentTime + 0.1;
   scheduleNextBeat();
-  renderScene(false);
+  renderScene('normal');
   requestAnimationFrame(animateNotes);
 }
 
 // Initial static render (no audio yet)
 window.addEventListener('DOMContentLoaded', () => {
-  renderScene(false);
+  renderScene('normal');
 });
 </script>
 </body>

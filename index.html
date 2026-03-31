@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ASCII Jazz Organist – Funky Generative Music</title>
+  <title>Florian Hutter Stil – Unterhaltungsorgel</title>
   <style>
     /* ─── Retro CRT Terminal ─────────────────────────────── */
     *{box-sizing:border-box;margin:0;padding:0}
@@ -198,13 +198,13 @@
 
 <!-- Start overlay -->
 <div id="overlay" onclick="startMusic()">
-  <h1>◈ ASCII JAZZ ORGANIST ◈</h1>
-  <div class="sub">♩ ♪ ♫  F U N K Y &nbsp; G E N E R A T I V E &nbsp; J A Z Z  ♫ ♪ ♩</div>
-  <p>Bebop · Swing · Blues · All Night Long</p>
-  <p class="blink">[ CLICK TO START ]</p>
+  <h1>◈ FLORIAN HUTTER STIL ◈</h1>
+  <div class="sub">♩ ♪ ♫  U N T E R H A L T U N G S O R G E L  ♫ ♪ ♩</div>
+  <p>Foxtrott · Walzer · Swing · Beguine · Schlager · Evergreen</p>
+  <p class="blink">[ KLICK ZUM STARTEN ]</p>
 </div>
 
-<div id="title">♩ &nbsp; A S C I I &nbsp; J A Z Z &nbsp; O R G A N I S T &nbsp; ♪ &nbsp; F U N K Y &nbsp; G E N E R A T I V E &nbsp; M U S I C &nbsp; ♫</div>
+<div id="title">♩ &nbsp; F L O R I A N &nbsp; H U T T E R &nbsp; S T I L &nbsp; ♪ &nbsp; U N T E R H A L T U N G S O R G E L &nbsp; ♫</div>
 
 <div id="infoBar">
   <div>CHORD: <span id="chordDisplay">—</span></div>
@@ -220,20 +220,20 @@
 <div id="settings">
   <h3>⚙ SETTINGS</h3>
   <label>BPM
-    <input type="range" id="bpmSlider" min="60" max="220" value="144" oninput="updateBPM(this.value)">
-    <span class="val" id="bpmVal">144</span>
+    <input type="range" id="bpmSlider" min="60" max="200" value="108" oninput="updateBPM(this.value)">
+    <span class="val" id="bpmVal">108</span>
   </label>
   <label>SWING
-    <input type="range" id="swingSlider" min="0" max="85" value="55" oninput="updateSwing(this.value)">
-    <span class="val" id="swingVal">55%</span>
+    <input type="range" id="swingSlider" min="0" max="85" value="25" oninput="updateSwing(this.value)">
+    <span class="val" id="swingVal">25%</span>
   </label>
-  <label>STYLE
+  <label>STIL
     <select id="styleSelect" onchange="updateStyle(this.value)">
-      <option value="jazz">JAZZ</option>
-      <option value="blues">BLUES</option>
-      <option value="bebop">BEBOP</option>
-      <option value="funk">FUNK</option>
-      <option value="easy">EASY</option>
+      <option value="schlager" selected>SCHLAGER</option>
+      <option value="foxtrot">FOXTROTT</option>
+      <option value="walzer">WALZER</option>
+      <option value="swing">SWING</option>
+      <option value="beguine">BEGUINE</option>
     </select>
   </label>
 </div>
@@ -332,11 +332,11 @@ ${h}
      /  |      |  \\
     |   |______|   |
     |  /          \\  |
-    | / ♫ J A Z Z ♬ \\ |
-    |/   O R G A N   \\|
+    | / ♫ E L E G A N Z ♬ \\ |
+    |/  U N T E R H A L T  \\|
     |                 |
   ╔═╧═════════════════╧═╗
-  ║  ╔═══ J A Z Z ═══╗  ║
+  ║  ╔══ O R G E L ══╗  ║
   ║  ║ ░░░░░░░░░░░░░ ║  ║
   ╠══╬═══════════════╬══╣
   ║░░║░░░░░░░░░░░░░░░║░░║
@@ -364,10 +364,13 @@ let masterGain = null;
 
 // Note → frequency table
 const NOTE_FREQ = {
-  C2:65.41, D2:73.42, E2:82.41, F2:87.31, G2:98.00, A2:110.00, B2:123.47,
-  C3:130.81,D3:146.83,E3:164.81,F3:174.61,G3:196.00,A3:220.00,B3:246.94,
-  C4:261.63,D4:293.66,E4:329.63,F4:349.23,G4:392.00,A4:440.00,B4:493.88,
-  C5:523.25,D5:587.33,E5:659.25,F5:698.46,G5:783.99,A5:880.00,
+  C2:65.41,  D2:73.42,  E2:82.41,  F2:87.31,  G2:98.00,  A2:110.00, Bb2:116.54, B2:123.47,
+  C3:130.81, D3:146.83, Eb3:155.56, E3:164.81, F3:174.61, 'F#3':185.00,
+  G3:196.00, 'G#3':207.65, Ab3:207.65, A3:220.00, Bb3:233.08, B3:246.94,
+  C4:261.63, 'C#4':277.18, Db4:277.18, D4:293.66, 'D#4':311.13, Eb4:311.13,
+  E4:329.63, F4:349.23, 'F#4':369.99, G4:392.00, 'G#4':415.30, Ab4:415.30,
+  A4:440.00, Bb4:466.16, B4:493.88,
+  C5:523.25, D5:587.33, Eb5:622.25, E5:659.25, F5:698.46, G5:783.99, A5:880.00,
 };
 
 // Which white-key index (0–13) each note maps to
@@ -389,13 +392,13 @@ function createReverb(ctx) {
   return conv;
 }
 
-// Style-specific drawbar (harmonic) settings
+// Style-specific drawbar (harmonic) settings – warm Heimorgel / Wersi entertainment sound
 const STYLE_DRAWBARS = {
-  jazz:  { harmonics:[1,2,3,4,6,8],  drawbars:[6,8,4,3,2,1] },
-  blues: { harmonics:[1,2,3,4,6],    drawbars:[8,5,6,3,2]   },
-  bebop: { harmonics:[1,2,3,4,6,8],  drawbars:[5,8,5,4,2,1] },
-  funk:  { harmonics:[1,2,3,4,6],    drawbars:[8,7,5,3,1]   },
-  easy:  { harmonics:[1,2,3,4,6,8],  drawbars:[8,6,4,3,2,1] },
+  schlager:{ harmonics:[1,2,3,4,6,8],  drawbars:[8,6,5,4,2,1] }, // full, warm, present
+  foxtrot: { harmonics:[1,2,3,4,6,8],  drawbars:[8,7,5,4,3,1] }, // brilliant, dance-floor
+  walzer:  { harmonics:[1,2,3,4,6],    drawbars:[8,6,4,3,2]   }, // smooth, sweet strings
+  swing:   { harmonics:[1,2,3,4,6,8],  drawbars:[6,8,5,3,2,1] }, // bright, jazzy sparkle
+  beguine: { harmonics:[1,2,3,4,6],    drawbars:[7,7,4,3,1]   }, // warm Latin colour
 };
 
 function playOrganNote(note, duration, velocity=0.28) {
@@ -403,7 +406,7 @@ function playOrganNote(note, duration, velocity=0.28) {
   const freq = NOTE_FREQ[note];
   if(!freq) return;
 
-  const db = STYLE_DRAWBARS[currentStyle] || STYLE_DRAWBARS.jazz;
+  const db = STYLE_DRAWBARS[currentStyle] || STYLE_DRAWBARS.schlager;
   const { harmonics, drawbars } = db;
 
   const noteGain = audioCtx.createGain();
@@ -432,93 +435,131 @@ function playOrganNote(note, duration, velocity=0.28) {
   noteGain.gain.linearRampToValueAtTime(0, now + duration + 0.07);
 }
 
-// ─── Jazz chord definitions ────────────────────────────────────
+// ─── Chord definitions for entertainment organ ────────────────
 const CHORD_DEFS = {
   // Triads
-  'C':    { bass:['C3','G3'],  mel:['C4','E4','G4','C5'],       label:'C'     },
-  'Am':   { bass:['A2','E3'],  mel:['A3','C4','E4','A4'],       label:'Am'    },
-  'F':    { bass:['F2','C3'],  mel:['F3','A3','C4','F4'],       label:'F'     },
-  'G':    { bass:['G2','D3'],  mel:['G3','B3','D4','G4'],       label:'G'     },
-  'Dm':   { bass:['D3','A3'],  mel:['D4','F4','A4'],            label:'Dm'    },
-  'Em':   { bass:['E3','B3'],  mel:['E4','G4','B4'],            label:'Em'    },
-  // Dominant & extended chords
-  'G7':   { bass:['G2','D3'],  mel:['G3','B3','F4','G4'],       label:'G7'    },
-  'D7':   { bass:['D3','A3'],  mel:['D4','F4','A4','C5'],       label:'D7'    },
-  'A7':   { bass:['A2','E3'],  mel:['A3','C4','E4','G4'],       label:'A7'    },
-  'C7':   { bass:['C3','G3'],  mel:['C4','E4','G4','B4'],       label:'C7'    },
-  'F7':   { bass:['F2','C3'],  mel:['F3','A3','C4','E4'],       label:'F7'    },
+  'C':    { bass:['C3','G3'],  mel:['C4','E4','G4','C5'],           label:'C'     },
+  'Am':   { bass:['A2','E3'],  mel:['A3','C4','E4','A4'],           label:'Am'    },
+  'F':    { bass:['F2','C3'],  mel:['F3','A3','C4','F4'],           label:'F'     },
+  'G':    { bass:['G2','D3'],  mel:['G3','B3','D4','G4'],           label:'G'     },
+  'Dm':   { bass:['D3','A3'],  mel:['D4','F4','A4','D5'],           label:'Dm'    },
+  'Em':   { bass:['E3','B3'],  mel:['E4','G4','B4','E5'],           label:'Em'    },
+  'Bb':   { bass:['Bb2','F3'], mel:['Bb3','D4','F4','Bb4'],         label:'Bb'    },
+  'Fm':   { bass:['F2','C3'],  mel:['F3','Ab3','C4','F4'],          label:'Fm'    },
+  // Dominant 7ths
+  'G7':   { bass:['G2','D3'],  mel:['G3','B3','F4','G4'],           label:'G7'    },
+  'D7':   { bass:['D3','A3'],  mel:['D4','F#4','A4','C5'],          label:'D7'    },
+  'A7':   { bass:['A2','E3'],  mel:['A3','C#4','E4','G4'],          label:'A7'    },
+  'E7':   { bass:['E2','B2'],  mel:['E3','G#3','B3','D4'],          label:'E7'    },
+  'B7':   { bass:['B2','F#3'], mel:['B3','D#4','F#4','A4'],         label:'B7'    },
+  'C7':   { bass:['C3','G3'],  mel:['C4','E4','G4','Bb4'],          label:'C7'    },
+  'F7':   { bass:['F2','C3'],  mel:['F3','A3','C4','Eb4'],          label:'F7'    },
+  'Bb7':  { bass:['Bb2','F3'], mel:['Bb3','D4','F4','Ab4'],         label:'Bb7'   },
   // Major 7ths
-  'Cmaj7':{ bass:['C3','G3'],  mel:['C4','E4','G4','B4'],       label:'Cmaj7' },
-  'Fmaj7':{ bass:['F2','C3'],  mel:['F3','A3','C4','E4'],       label:'Fmaj7' },
+  'Cmaj7':{ bass:['C3','G3'],  mel:['C4','E4','G4','B4'],           label:'Cmaj7' },
+  'Fmaj7':{ bass:['F2','C3'],  mel:['F3','A3','C4','E4'],           label:'Fmaj7' },
   // Minor 7ths
-  'Am7':  { bass:['A2','E3'],  mel:['A3','C4','E4','G4'],       label:'Am7'   },
-  'Dm7':  { bass:['D3','A3'],  mel:['D4','F4','A4','C5'],       label:'Dm7'   },
-  'Em7':  { bass:['E3','B3'],  mel:['E4','G4','B4','D5'],       label:'Em7'   },
+  'Am7':  { bass:['A2','E3'],  mel:['A3','C4','E4','G4'],           label:'Am7'   },
+  'Dm7':  { bass:['D3','A3'],  mel:['D4','F4','A4','C5'],           label:'Dm7'   },
+  'Em7':  { bass:['E3','B3'],  mel:['E4','G4','B4','D5'],           label:'Em7'   },
   // Diminished
-  'Bdim': { bass:['B2','F3'],  mel:['B3','D4','F4'],            label:'Bdim'  },
+  'Bdim': { bass:['B2','F3'],  mel:['B3','D4','F4','B4'],           label:'Bdim'  },
 };
 
-// ─── Melody lines per chord (jazzy passing-tone patterns) ──────
+// ─── Melody lines per chord – singable Schlager/entertainment style ──
 const MELODY_OVER = {
-  'C':    ['C4','E4','G4','C5','B4','G4','E4','C4'],
-  'Am':   ['A4','C5','E5','A4','G4','E4','C4','A3'],
-  'F':    ['F4','A4','C5','F5','E5','C5','A4','F4'],
-  'G':    ['G4','B4','D5','G5','F5','D5','B4','G4'],
-  'Dm':   ['D4','F4','A4','D5','C5','A4','F4','D4'],
-  'Em':   ['E4','G4','B4','E5','D5','B4','G4','E4'],
-  'G7':   ['G4','B4','D5','F5','E5','D5','B4','G4'],
-  'D7':   ['D4','F4','A4','C5','D5','C5','A4','F4'],
-  'A7':   ['A3','C4','E4','G4','A4','G4','E4','C4'],
-  'C7':   ['C4','E4','G4','B4','C5','B4','G4','E4'],
-  'F7':   ['F4','A4','C5','E5','F5','E5','C5','A4'],
-  'Cmaj7':['C4','E4','G4','B4','C5','E5','B4','G4'],
-  'Fmaj7':['F4','A4','C5','E5','F5','E5','C5','A4'],
+  'C':    ['C4','D4','E4','G4','E4','D4','C4','G4'],
+  'Am':   ['A4','B4','C5','A4','G4','E4','A4','E4'],
+  'F':    ['F4','G4','A4','C5','A4','G4','F4','C4'],
+  'G':    ['G4','A4','B4','D5','B4','A4','G4','D4'],
+  'Dm':   ['D4','E4','F4','A4','F4','E4','D4','A3'],
+  'Em':   ['E4','G4','A4','B4','A4','G4','E4','B3'],
+  'Bb':   ['Bb4','C5','D5','F5','D5','C5','Bb4','F4'],
+  'Fm':   ['F4','G4','Ab4','C5','Ab4','G4','F4','C4'],
+  'G7':   ['G4','F4','D4','B3','D4','F4','G4','F4'],
+  'D7':   ['D4','E4','F#4','A4','C5','A4','F#4','E4'],
+  'A7':   ['A3','B3','C#4','E4','G4','E4','C#4','B3'],
+  'E7':   ['E4','G4','B4','D5','B4','G4','E4','G4'],
+  'B7':   ['B4','A4','F#4','D4','F#4','A4','B4','A4'],
+  'C7':   ['C4','D4','E4','G4','Bb4','G4','E4','D4'],
+  'F7':   ['F4','G4','A4','C5','Eb5','C5','A4','G4'],
+  'Bb7':  ['Bb4','C5','D5','F5','Ab4','F4','D4','C4'],
+  'Cmaj7':['C4','E4','G4','B4','A4','G4','E4','D4'],
+  'Fmaj7':['F4','A4','C5','E5','D5','C5','A4','G4'],
   'Am7':  ['A3','C4','E4','G4','A4','G4','E4','C4'],
-  'Dm7':  ['D4','F4','A4','C5','D5','C5','A4','F4'],
-  'Em7':  ['E4','G4','B4','D5','E5','D5','B4','G4'],
-  'Bdim': ['B3','D4','F4','B4','A4','G4','F4','D4'],
+  'Dm7':  ['D4','F4','A4','C5','A4','F4','E4','D4'],
+  'Em7':  ['E4','G4','B4','D5','B4','A4','G4','E4'],
+  'Bdim': ['B3','D4','F4','B4','D4','F4','D4','B3'],
 };
 
-// ─── Per-style progressions ────────────────────────────────────
+// ─── Per-style progressions – Florian Hutter Unterhaltungsorgel ──
 const STYLE_PROGRESSIONS = {
-  jazz:  [
+  // SCHLAGER: catchy, tonal, secondary dominants, I–V–VI–IV and variants
+  schlager: [
+    ['C','G7','Am','F'],
+    ['C','F','G7','C'],
+    ['C','E7','Am','F'],
+    ['C','Am','F','G7'],
+    ['C','E7','Am','A7','Dm7','G7'],
+    ['F','G7','Am','Em','F','G7','C','C'],
+  ],
+  // FOXTROTT: elegant circle-of-fifths chain, secondary dominants
+  foxtrot: [
+    ['C','A7','D7','G7'],
+    ['C','E7','Am','G7'],
+    ['C','C7','F','G7'],
     ['Cmaj7','Am7','Dm7','G7'],
-    ['Fmaj7','Em7','Am7','G7'],
-    ['Cmaj7','Em7','Fmaj7','G7'],
-    ['Dm7','G7','Cmaj7','Am7'],
+    ['C','A7','Dm','G7'],
+    ['F','D7','G7','C'],
   ],
-  blues: [
-    ['C7','F7','C7','G7'],
-    ['C7','C7','F7','F7','C7','C7','G7','F7'],
+  // WALZER: flowing key-of-F major, Bb colouring
+  walzer: [
+    ['F','C7','Bb','C7'],
+    ['F','Dm','Bb','C7'],
+    ['F','A7','Dm','C7'],
+    ['Bb','F','C7','F'],
+    ['F','Bb','C7','F'],
+    ['Dm','A7','Dm','C7'],
   ],
-  bebop: [
-    ['Cmaj7','Bdim','Am7','D7','Dm7','G7','Cmaj7','G7'],
-    ['Dm7','G7','Cmaj7','Em7'],
-    ['Am7','D7','Dm7','G7'],
+  // SWING: bright, II–V–I patterns, accessible jazz
+  swing: [
+    ['G','E7','Am7','D7'],
+    ['Cmaj7','A7','Dm7','G7'],
+    ['G','G7','Cmaj7','D7'],
+    ['Cmaj7','Em7','Am7','G7'],
+    ['G','B7','Em','D7'],
+    ['Am7','D7','G','G7'],
   ],
-  funk:  [
-    ['C7','C7','F7','C7'],
-    ['Am7','Am7','Dm7','G7'],
-  ],
-  easy:  [
-    ['C','Am','F','G'],
-    ['C','F','G','C'],
-    ['C','Am','Dm','G7'],
-    ['C','Em','F','G'],
-    ['F','G','Am','C'],
+  // BEGUINE: latin elegance, minor colour, modal mixture
+  beguine: [
+    ['C','F','C','G7'],
+    ['C','Am','Dm7','G7'],
+    ['C','C7','F','Fm'],
+    ['Am','E7','Am','G7'],
+    ['C','Fmaj7','Dm7','G7'],
+    ['Am','Dm','E7','Am'],
   ],
 };
 
-const STYLE_LABELS = { jazz:'JAZZ', blues:'BLUES', bebop:'BEBOP', funk:'FUNK', easy:'EASY' };
+const STYLE_LABELS = { schlager:'SCHLAGER', foxtrot:'FOXTROTT', walzer:'WALZER', swing:'SWING', beguine:'BEGUINE' };
+
+// Style-specific BPM and swing defaults
+const STYLE_DEFAULTS = {
+  schlager:{ bpm:108, swing:25 },
+  foxtrot: { bpm:108, swing:20 },
+  walzer:  { bpm:148, swing: 5 },
+  swing:   { bpm:124, swing:55 },
+  beguine: { bpm:104, swing:12 },
+};
 
 // ─── Runtime music state ───────────────────────────────────────
-let currentBPM   = 144;
-let currentSwing = 55;
-let currentStyle = 'jazz';
+let currentBPM   = 108;
+let currentSwing = 25;
+let currentStyle = 'schlager';
 
 let currentProgIdx   = 0;
 let currentChordStep = 0;
-let currentProg      = STYLE_PROGRESSIONS.jazz[0];
+let currentProg      = STYLE_PROGRESSIONS.schlager[0];
 let melodyIdx        = 0;
 
 function getBeatSec() { return 60 / currentBPM; }
@@ -706,13 +747,13 @@ function updateBPM(val) {
 function updateSwing(val) {
   currentSwing = parseInt(val, 10);
   document.getElementById('swingVal').textContent = val + '%';
-  const SWING_THRESHOLD_STRAIGHT = 15;
-  const SWING_THRESHOLD_LITE     = 40;
-  const SWING_THRESHOLD_NORMAL   = 65;
-  const feel = val < SWING_THRESHOLD_STRAIGHT ? 'STRAIGHT'
-             : val < SWING_THRESHOLD_LITE     ? 'LITE SWING'
+  const SWING_THRESHOLD_STRAIGHT = 10;
+  const SWING_THRESHOLD_LITE     = 30;
+  const SWING_THRESHOLD_NORMAL   = 55;
+  const feel = val < SWING_THRESHOLD_STRAIGHT ? 'GERADE'
+             : val < SWING_THRESHOLD_LITE     ? 'LEICHT'
              : val < SWING_THRESHOLD_NORMAL   ? 'SWING'
-             : 'HEAVY SWING';
+             : 'STARK';
   document.getElementById('feelDisplay').textContent = feel;
 }
 
@@ -723,6 +764,17 @@ function updateStyle(val) {
   melodyBeatInBar  = 0;
   currentProg      = STYLE_PROGRESSIONS[val][0];
   document.getElementById('styleDisplay').textContent = STYLE_LABELS[val];
+
+  const def = STYLE_DEFAULTS[val];
+  if(def) {
+    currentBPM   = def.bpm;
+    currentSwing = def.swing;
+    document.getElementById('bpmSlider').value    = def.bpm;
+    document.getElementById('swingSlider').value  = def.swing;
+    document.getElementById('bpmVal').textContent = def.bpm;
+    document.getElementById('bpmDisplay').textContent = def.bpm;
+    updateSwing(def.swing);
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
